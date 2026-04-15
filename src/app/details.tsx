@@ -1,8 +1,8 @@
-import { View, Text, Image, Touchable, TouchableOpacity, Modal, ScrollView } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { styles } from './styles';
-import { useRef, useState, useCallback, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { styles } from './styles';
 
 export default function Details() {
     const { itemId } = useLocalSearchParams();
@@ -193,7 +193,7 @@ export default function Details() {
             <View style={styles.contentContainer}>
                 <Text style={styles.detailsElementTitleText}>Szczegóły: {title}</Text>
                 <Image source={imageSource} 
-                style={styles.contentTileImage} />
+                style={[styles.contentTileImage, { alignSelf: 'center', marginRight: 0 }]} />
 
                 <View style={styles.MovementContainer}>
                     <TouchableOpacity style={styles.movementButton} onPressIn={moveForwardPressed} onPressOut={moveForwardUnpressed} delayLongPress={100}>

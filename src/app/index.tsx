@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Image, Touchable } from 'react-native';
-import React, { useState, useEffect } from 'react';
-const defaultImage = require('../../assets/images/icon.png');
-import { styles } from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ImageBackground } from 'expo-image';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
+import { FlatList, Modal, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { styles } from './styles';
+const defaultImage = require('../../assets/images/icon.png');
 
 type DataItem = {
   id: string;
@@ -49,23 +49,23 @@ const AutonomiczneRobotApp = () =>
     setModal2Visible(true);
   };
 
-    const saveEdit = (id: string) => {
-    setData(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, title: editedText } : item
-      )
+  const saveEdit = async (id: string) => {
+    // 1. Wyliczamy nową tablicę raz
+    const updatedData = data.map(item =>
+      item.id === id ? { ...item, title: editedText } : item
     );
 
+    // 2. Aktualizujemy stan
+    setData(updatedData);
+
+    // 3. Zapisujemy TĘ SAMĄ tablicę do Storage
     try {
-      const updatedData = data.map(item =>
-        item.id === id ? { ...item, title: editedText } : item
-      );
-      AsyncStorage.setItem('robotItems', JSON.stringify(updatedData));
+      await AsyncStorage.setItem('robotItems', JSON.stringify(updatedData));
     } catch (e) {
-      console.log('Błąd zapisywania danych:', e);
+      console.error('Błąd zapisu:', e);
     }
+
     setEditingId(null);
-    setEditedText('');
     setModal2Visible(false);
   };
 
@@ -119,55 +119,56 @@ const AutonomiczneRobotApp = () =>
           <FlatList
             data={data}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexGrow: 1,
-              paddingVertical: 20,
-              width: '100%',
+            contentContainerStyle={{ 
+              paddingHorizontal: 20, 
+              paddingTop: 20, 
+              paddingBottom: 20,
+              alignItems: 'center'
             }}
-            renderItem={({ item }) => 
-              {
-                if (item.isAddButton) 
-                {
-                  return (
-                    <TouchableOpacity style={styles.buttonToAdd} onPress = {() => handleAddItem()}>
-                      <View style={styles.contentTile}>
-                        <Text style={styles.contentTitle}>Add Item</Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                }
-
+            style={{ width: '100%' }}
+            renderItem={({ item }) => {
+              if (item.isAddButton) {
                 return (
-                  <TouchableOpacity
-                    onPress={() =>
-                      router.push({
-                        pathname: '/details',
-                        params: {
-                          itemId: item.id
-                        }
-                      })
-                    }
+                  <TouchableOpacity 
+                    style={{ width: '100%', alignItems: 'center' }}
+                    onPress={() => handleAddItem()}
                   >
-                    <View style={styles.contentTile}>
-                      <ImageBackground source={item.img} style={styles.contentTileImage}>
-                      </ImageBackground>
-                      <View style={styles.contentTileRight}>
-                        <Text style={styles.contentTitle}>{item.title}</Text>
-                        <View style={styles.buttonsContainer}>
-                          <TouchableOpacity style={styles.editIconContainer} onPress={() => startEditing(item)}>
-                            <Text style={styles.buttonText}>Edit</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={styles.deleteIconContainer} onPress={() => handleDeleteItem(item.id)}>
-                            <Text style={styles.buttonText}>Delete</Text>
-                          </TouchableOpacity>
-                        </View>
+                    <View style={[
+                      styles.contentTile, 
+                      { width: '100%', minWidth: Platform.OS === 'web' ? 800 : 'auto' }
+                    ]}>
+                      <View style={[styles.addTileContent, { width: '100%' }]}>
+                        <Text style={[styles.contentTitle, { textAlign: 'center', width: '100%' }]}>
+                          Add Item
+                        </Text>
                       </View>
                     </View>
                   </TouchableOpacity>
                 );
-              }}
+              }
+
+              return (
+                <TouchableOpacity
+                  style={{ width: '100%' }}
+                  onPress={() => router.push({ pathname: '/details', params: { itemId: item.id } })}
+                >
+                  <View style={styles.contentTile}>
+                    <ImageBackground source={item.img} style={styles.contentTileImage} />
+                    <View style={styles.contentTileRight}>
+                      <Text style={styles.contentTitle}>{item.title}</Text>
+                      <View style={styles.buttonsContainer}>
+                        <TouchableOpacity style={styles.editIconContainer} onPress={() => startEditing(item)}>
+                          <Text style={styles.buttonText}>Edit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.deleteIconContainer} onPress={() => handleDeleteItem(item.id)}>
+                          <Text style={styles.buttonText}>Delete</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
           />
 
           <Modal

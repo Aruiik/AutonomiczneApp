@@ -7,43 +7,34 @@ export const styles = StyleSheet.create({
       flexDirection: 'column',
       width: '100%',
       height: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
     },
 
     titleContainer: 
     {
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'center',
+      height: 80,
+      flexShrink: 0,
       backgroundColor: 'yellow',
+      justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      height: '10%',
     },
 
     contentContainer:
     {
-      flex: 10,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: 40,
-      backgroundColor: 'lightgray',
-      paddingTop: 20,
+      flex: 1,
       width: '100%',
+      backgroundColor: 'lightgray',
     },
 
     footerContainer:
     {
-      flex: 0.5,
+      height: 60, // Stała wysokość
+      flexShrink: 0,
+      backgroundColor: 'yellow',
       flexDirection: 'row',
       justifyContent: 'center',
-      backgroundColor: 'yellow',
       alignItems: 'center',
       width: '100%',
-      height: '5%',
-      gap: 20,
     },
 
     text: 
@@ -63,34 +54,50 @@ export const styles = StyleSheet.create({
       paddingBottom: 60,
     },
 
-    contentTile:
+    contentTile: 
     {
-      width: Platform.OS === 'web' ? 800 : '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
+      width: Platform.OS === 'web' ? 800 : '100%', 
+      maxWidth: Platform.OS === 'web' ? 800 : '100%',
+      
+      height: 150, 
       backgroundColor: 'white',
-      borderRadius: 25,
-      marginBottom: 25,
+      borderRadius: 20,
+      marginBottom: 20,
       flexDirection: 'row',
       padding: 15,
-      gap: 20,
+      alignItems: 'center',
+      alignSelf: 'center', 
+
+      elevation: 4,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
     },
 
-    contentTileImage:
+    addTileContent: 
     {
-      width: 150,
-      height: 150,
-      borderRadius: 15,
-      flexShrink: 0,
+      flex: 1,
+      alignSelf: 'stretch',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
 
-    contentTileRight:
+    contentTileImage: 
+    {
+      width: 120,
+      height: 120,
+      borderRadius: 15,
+      marginRight: 15,
+    },
+
+    contentTileRight: 
     {
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      height: 150,
+      height: 120,
+      paddingLeft: 10,
     },
 
     contentTitle:
@@ -103,12 +110,11 @@ export const styles = StyleSheet.create({
       maxWidth: '100%',
     },
 
-    buttonsContainer:
+    buttonsContainer: 
     {
-      flexDirection: 'column',
+      flexDirection: 'row',
       gap: 10,
-      left: '50%',
-      width: '50%',
+      width: '100%',
     },
 
     buttonToAdd: {
